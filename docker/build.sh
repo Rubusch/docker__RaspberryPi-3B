@@ -10,5 +10,4 @@ make ${DEFCONFIG}
 make -j8
 
 ## obtain build artifacts
-# TODO      
-#cp -arvf /root/buildroot/* /mnt/
+cp -arvf /root/buildroot/output/* /mnt/
