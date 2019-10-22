@@ -15,7 +15,7 @@ ENV LC_ALL en_US.UTF-8
 #ENV BUILDARCH 'amd64'
 
 ## get sources
-RUN git clone -j4 --depth=1 --branch lothar/raspberry3-dev https://github.com/Rubusch/buildroot.git buildroot
+RUN git clone -j4 --depth=1 --branch lothar/raspberry3-devel https://github.com/Rubusch/buildroot.git buildroot
 
 ## copy build.sh
 COPY build.sh /root/build.sh
