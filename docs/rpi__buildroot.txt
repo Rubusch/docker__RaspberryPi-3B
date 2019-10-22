@@ -1,0 +1,89 @@
+rpi
+
+
+building rpi bsp with buildroot
+
+
+
+
+
+RESOURCES
+
+https://github.com/buildroot/buildroot/tree/master/board/raspberrypi
+ * there go to buildroot/board/raspberrypi/ for the README.md
+
+https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Buildroot.html
+
+
+
+
+CONFIGURATION
+
+fetch correct setup
+$ make raspberrypi3_defconfig_lothar
+
+
+networking to static ip
+$ mkdir overlay
+$ mkdir -p overlay/etc/network
+$ vi overlay/etc/network/interfaces
+    auto eth0
+    allow-hotplug eth0
+    iface eth0 inet static
+    address 192.168.100.200
+    netmask 255.255.255.0
+
+$ make menuconfig
+    -> System Configuration -> Root Filesystem Overlay
+
+    there provide "overlay", under the folder, the path to the file and file
+    will overwrite the target location in the build
+    (e.g. output/target/etc/network/intefaces)
+
+
+
+BUILD
+
+For models A, B, A+ or B+:
+$ make raspberrypi_defconfig
+
+For model Zero (model A+ in smaller form factor):
+$ make raspberrypi0_defconfig
+
+For model 2 B:
+$ make raspberrypi2_defconfig
+
+For model 3 B and B+:
+$ make raspberrypi3_defconfig
+
+For model 4 B:
+$ make raspberrypi4_defconfig
+
+
+
+
+Build the rootfs
+
+$ make raspberrypi3_defconfig_lothar
+
+Note: you will need to have access to the network, since Buildroot will
+download the packages' sources.
+$ make
+    ...
+    INFO: hdimage(sdcard.img): adding partition 'boot' (in MBR) from 'boot.vfat' ...
+    INFO: hdimage(sdcard.img): adding partition 'rootfs' (in MBR) from 'rootfs.ext4' ...
+    INFO: hdimage(sdcard.img): writing MBR
+
+    real    620m1.681s
+    user    176m28.219s
+    sys     21m12.699s
+
+
+find the image then on
+    output/images
+
+
+
+
+connect the sd card, e.g. on /dev/sdd
+$ sudo dd if=output/images/sdcard.img of=/dev/sdd bs=1M

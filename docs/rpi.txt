@@ -1,0 +1,752 @@
+Raspberry pi
+
+RESOURCES
+
+http://workshop.raspberrypiaustralia.com/usb/ttl/connecting/2014/08/31/01-connecting-to-raspberry-pi-via-usb/
+https://elinux.org/RPi_U-Boot
+
+https://www.raspberrypi.org/documentation/
+
+
+
+environment
+$ export BASE=/opt/workspace/raspberry-pi-3b
+
+
+
+IMAGES (official)
+
+https://www.raspberrypi.org/downloads/
+
+by default images are graphical and display only
+alternative, edit `/boot/config.txt` and append `enable_uart=1`
+
+
+
+IMAGES - raspbian
+
+https://www.raspbian.org/
+
+
+make sure card is on /dev/sdc,
+unmount all mounted /dev/sdc partitions
+all partitions will be lost
+
+use `$ dd bs=4M if=2017-09-07-raspbian-stretch.img of=/dev/sdX conv=fsync`, e.g.
+
+$ sudo dd bs=4M if=${BASE}/raspbian/2017-09-07-raspbian-stretch-lite.img of=/dev/sdc conv=sync
+    442+1 records in
+    443+0 records out
+    1858076672 bytes (1.9 GB, 1.7 GiB) copied, 230.139 s, 8.1 MB/s
+
+$ sync
+
+
+NOTE: block size set to 4M will work most of the time;
+if not, try 1M, although this will take considerably longer
+
+NOTE: since jessie, the serial console must be enabled explicitely
+in case unplug and replug the sd-card
+$ sudo mount /dev/mmcblk0p1 /mnt
+$ sudo vi /mnt/config.txt
+        (...)
+        # Enable serial console
+        enable_uart=1
+$ sync
+$ sudo umount /mnt
+
+
+login (raspbian)
+u: pi
+p: raspberry
+
+
+
+
+IMAGES - noobs
+
+format an sd card with a single partition FAT / win95
+
+$ sudo fdisk /dev/sdc
+then
+    p,d (all former partitions)
+    p,n,<ENTER>,<ENTER>,<ENTER>,<ENTER>,t,c
+    p,w
+
+example:
+    Welcome to fdisk (util-linux 2.29.2).
+
+    Changes will remain in memory only, until you decide to write them.
+    Be careful before using the write command.
+
+    Command (m for help): p
+    Disk /dev/sdc: 7.3 GiB, 7850688512 bytes, 15333376 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x00000000
+
+    Device     Boot Start      End  Sectors  Size Id Type
+    /dev/sdc1        8192 15333375 15325184  7.3G  b W95 FAT32
+
+    Command (m for help): d
+    Selected partition 1
+    Partition 1 has been deleted.
+
+    Command (m for help): n
+    Partition type
+       p   primary (0 primary, 0 extended, 4 free)
+       e   extended (container for logical partitions)
+    Select (default p):  <ENTER>
+
+    Using default response p.
+    Partition number (1-4, default 1):  <ENTER>
+    First sector (2048-15333375, default 2048):  <ENTER>
+    Last sector, +sectors or +size{K,M,G,T,P} (2048-15333375, default 15333375): <ENTER>
+
+    Created a new partition 1 of type 'Linux' and of size 7.3 GiB.
+
+    Command (m for help): p
+    Disk /dev/sdc: 7.3 GiB, 7850688512 bytes, 15333376 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x00000000
+
+    Device     Boot Start      End  Sectors  Size Id Type
+    /dev/sdc1        2048 15333375 15331328  7.3G 83 Linux
+
+    Command (m for help): t
+    Selected partition 1
+    Partition type (type L to list all types): c
+    Changed type of partition 'Linux' to 'W95 FAT32 (LBA)'.
+
+    Command (m for help): p
+    Disk /dev/sdc: 7.3 GiB, 7850688512 bytes, 15333376 sectors
+    Units: sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disklabel type: dos
+    Disk identifier: 0x00000000
+
+    Device     Boot Start      End  Sectors  Size Id Type
+    /dev/sdc1        2048 15333375 15331328  7.3G  c W95 FAT32 (LBA)
+
+    Command (m for help): w
+    The partition table has been altered.
+    Calling ioctl() to re-read partition table.
+    Syncing disks.
+
+
+format and copy files
+
+$ sudo mkfs.msdos -F 32 /dev/sdc1 -n "ROOTFS"
+$ sudo mount /dev/mmcblk0p1 /mnt
+$ sudo cp -rf ${BASE}/images__noobs/image/* /mnt/
+$ sudo umount /mnt
+
+
+console
+edit /boot/config.txt and set
+    enable_uart=1
+
+
+
+
+
+IMAGES - yocto
+
+http://www.jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
+
+
+yocto - pre-built images
+
+ -  require an SD card at least 4GB in size.
+from a Linux machine, install like this
+$ unxz -c <img-name>.xz | sudo dd of=/dev/sdb bs=1M
+
+adjust the '/dev/sdb' to where the SD card shows up on your machine
+You can use lsblk to find out.
+
+login (yocto)
+User: root
+Password: jumpnowtek
+
+
+
+
+yocto - building images
+
+
+$ git clone -b rocko git://git.yoctoproject.org/poky.git poky-rocko
+$ cd poky-rocko
+$ git clone -b rocko git://git.openembedded.org/meta-openembedded
+$ git clone -b rocko https://github.com/meta-qt5/meta-qt5
+$ git clone -b rocko git://git.yoctoproject.org/meta-security
+$ git clone -b pyro git://git.yoctoproject.org/meta-raspberrypi
+
+quickfixes:
+serial, change S0 to AMA0
+$ vi ./meta-raspberrypi/conf/machine/raspberrypi3.conf
+    SERIAL_CONSOLE ?= "115200 ttyAMA0"
+$ vi ./meta-raspberrypi/recipes-devtools/python/rpi-gpio_0.6.2.bb
+    // SRC_URI paths: change http to https
+$ vi ./meta-raspberrypi/recipes-devtools/python/rpio_0.10.0.bb
+    // SRC_URI paths: change http to https
+$ rm recipes-multimedia/gstreamer/gstreamer1.0-omx_1.10%.bbappend
+
+$ mkdir ./rpi
+$ cd ./rpi
+$ git clone -b rocko git://github.com/jumpnow/meta-rpi
+
+
+$ source ./oe-init-build-env
+$ vi ./conf/local.conf
+    MACHINE = "raspberrypi3"
+    ENABLE_UART = "1"
+$ bitbake console-image
+
+
+clean
+$ bitbake console-image -c clean
+or
+$ bitbake console-image -c cleansstate
+
+
+
+yocto - prepare sd card (brief)
+
+$ sudo ../meta-rpi/scripts/mk2parts.sh mmcblk0
+$ export MACHINE=raspberrypi3
+$ export OETMP=${BASE}/yocto/poky-rocko/build/tmp
+$ ../meta-rpi/scripts/copy_boot.sh mmcblk0
+$ ../meta-rpi/scripts/copy_rootfs.sh mmcblk0 console
+
+quickfix
+$ sudo mount /dev/mmcblk0p2 /mnt
+$ sudo vi /mnt/etc/inittab
+    (...)
+    S0:12345:respawn:/bin/start_getty 115200 ttyAMA0 vt102
+
+
+
+
+
+yocto - toolchain
+
+$ source ./oe-init-build-env
+$ bitbake meta-toolchain
+
+deploy toolchain by script
+$ ./tmp/deploy/sdk/poky-glibc-x86_64-meta-toolchain-cortexa7hf-neon-vfpv4-toolchain-2.4.sh
+    e.g. to /opt/toolchain/toolchain__rpi3__poky-2.4
+
+usage: source toolchain environment
+$ . /opt/toolchain/toolchain__rpi3__poky-2.4/environment-setup-cortexa7hf-neon-vfpv4-poky-linux-gnueabi
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-poky-linux-gnueabi-
+
+
+
+
+
+yocto - build kernel
+
+https://www.raspberrypi.org/documentation/linux/kernel/building.md
+
+build kernel - manually (toolchain setup)
+$ mkdir git_linux && cd ./git_linux
+$ git clone --depth=1 https://github.com/raspberrypi/linux .
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-poky-linux-gnueabi-
+$ export KERNEL=kernel7
+$ make bcm2709_defconfig
+$ make -j4 zImage modules dtbs
+
+(opt. create the following directory path)
+$ mkdir /mnt
+$ mkdir /mnt/fat32
+$ mkdir /mnt/ext4
+$ sudo mount /dev/sdb1 /mnt/fat32
+$ sudo mount /dev/sdb2 /mnt/ext4
+
+(opt. install modules)
+$ sudo make INSTALL_MOD_PATH=mnt/ext4 modules_install
+
+$ sudo cp mnt/fat32/$KERNEL.img /mnt/fat32/$KERNEL-backup.img
+$ sudo cp arch/arm/boot/zImage /mnt/fat32/$KERNEL.img
+$ sudo cp arch/arm/boot/dts/*.dtb /mnt/fat32/
+$ sudo cp arch/arm/boot/dts/overlays/*.dtb* /mnt/fat32/overlays/
+$ sudo cp arch/arm/boot/dts/overlays/README /mnt/fat32/overlays/
+$ sudo umount mnt/fat32
+$ sudo umount mnt/ext4
+FIXME: hangs at boot (check boot.scr)
+
+
+
+or
+
+build kernel - via yocto's zImage
+in yocto configure kernel image type in conf/local.conf
+    KERNEL_IMAGETYPE = "zImage"
+#    KERNEL_DEVICETREE = "${S}/arch/arm/boot/dts/myTree.dtb"
+#    KERNEL_EXTRA_ARGS += "LOADADDR=${UBOOT_ENTRYPOINT}"
+    #  use this kernel and version
+    PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
+    PREFERRED_VERSION_linux-yocto = "4.14%"
+
+$ bitbake -c cleansstate virtual/kernel
+$ bitbake virtual/kernel
+
+pass files to sd card
+$ sudo cp ./tmp/deploy/images/raspberrypi3/*.dtb /mnt/
+$ sudo cp ./tmp/deploy/images/raspberrypi3/overlays/*.dtb /mnt/overlays/
+
+---
+issue: dma engine for 2835 not working
+$ sudo cp ./tmp/deploy/images/raspberrypi3/zImage /mnt/
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} zImage
+    fatload mmc 0 ${fdt_addr_r} bcm2836-rpi-2-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+FIXME:
+    [    1.161891] uart-pl011 3f201000.serial: no DMA platform data
+    [    1.167747] Waiting for root device /dev/mmcblk0p2...
+    <hangs>
+dma driver missing as here https://github.com/raspberrypi/linux/issues/396
+---
+
+
+
+
+
+
+
+
+
+build kernel - mainline kernel, manually with initrd
+
+https://blog.christophersmart.com/2016/10/27/building-and-booting-upstream-linux-and-u-boot-for-raspberry-pi-23-arm-boards/
+
+make sure sd card is mounted on /mnt
+
+$ mkdir ./git_custom-initramfs && cd ./git_custom-initramfs
+$ git clone https://github.com/csmart/custom-initramfs.git .
+
+adjust, pkgurl for arm to
+    pkgurl=http://archives.fedoraproject.org/pub/archive/fedora/linux/releases/23/Everything/armhfp/os/Packages/b/${pkg}
+    (...)
+comment out fstab download
+
+$ ./create_initramfs.sh --arch arm --dir "${PWD}" --tty ttyAMA0
+$ gunzip initramfs-arm.cpio.gz
+$ sudo mkimage -A arm -T ramdisk -C none -n uInitrd -d initramfs-arm.cpio /mnt/uInitrd
+$ cd ..
+
+$ mkdir ./git_linux && cd ./git_linux
+$ git clone --depth 1 -b v4.9.75 git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git .
+
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-poky-linux-gnueabi-
+
+$ make bcm2835_defconfig
+$ make menuconfig
+for mainline kernels, configure
+    CONFIG_NEON=y
+    CONFIG_KERNEL_MODE_NEON=y
+
+$ make -j$(nproc) zImage dtbs
+$ sudo cp -iv arch/arm/boot/zImage /mnt/
+$ sudo cp -iv arch/arm/boot/dts/bcm2836-rpi-2-b.dtb /mnt/
+$ cd ..
+
+bootloader
+$ mkdir ./boot_script && cd ./boot_script
+$ cat > boot.cmd << EOF
+fatload mmc 0 \${kernel_addr_r} zImage
+fatload mmc 0 \${fdt_addr_r} bcm2836-rpi-2-b.dtb
+fatload mmc 0 \${ramdisk_addr_r} uInitrd
+setenv bootargs console=ttyAMA0,115200 earlyprintk root=/dev/root rootwait panic=10
+bootz \${kernel_addr_r} \${ramdisk_addr_r} \${fdt_addr_r}
+EOF
+
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+unmount /mnt and test the sd card, they system is booting into the initrd
+
+--> works, but no rootfs mounted
+
+TODO try boot.cmd with rootfs                          
+TODO figure out how to mount rootfs from initrd        
+
+
+
+
+build kernel - mainline kernel, manually without initrd
+
+make sure the following options are set
+    CONFIG_NEON=y
+    CONFIG_KERNEL_MODE_NEON=y
+
+
+change the boot.cmd
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} zImage
+    fatload mmc 0 ${fdt_addr_r} bcm2836-rpi-2-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+
+
+
+
+
+
+yocto - setup separate uboot
+
+https://elinux.org/RPi_U-Boot
+https://arrizza.org/wiki/index.php/RPI_U-boot
+
+$ mkdir ./git_uboot && cd ./git_uboot
+$ git clone git://git.denx.de/u-boot.git .
+$ git co v2017.11-rc4 -b v2017.11-rc4
+
+setup and source e.g. yocto's toolchain (32 bit)
+
+$ export ARCH=arm
+$ export CROSS_COMPILE=arm-poky-linux-gnueabi-
+(does not work: $ make rpi_3_32b_defconfig)
+$ make rpi_2_defconfig
+$ make -j8
+
+$ vi boot.scr.source
+    fatload mmc 0:1 ${kernel_addr_r} kernel7.img
+    fatload mmc 0:1 ${fdt_addr_r} bcm2710-rpi-3-b.dtb
+    setenv bootargs earlyprintk dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+
+$ mkimage -A arm -O linux -T script -C none -a 0x00000000 -e 0x00000000 -n "rpi3 boot script" -d boot.scr.source boot.scr
+
+mount sd card (boot partition)
+$ sudo mount /dev/mmcblk0p1 /mnt
+$ sudo cp u-boot.bin /mnt
+$ sudo cp uboot.env /mnt
+$ sudo cp boot.scr /mnt
+
+$ sudo vi /mnt/config.txt
+    boot_delay_ms=5
+    enable_uart=1
+    dtoverlay=pi3-disable-bt
+    kernel=u-boot.bin
+
+$ cat /mnt/cmdline.txt
+ dwc_otg.lpm_enable=0 console=serial0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait
+
+$ sudo umount /mnt
+
+try on rpi3 -> power ->
+$ sudo screen /dev/ttyUSB0 115200
+
+NOTE: bcm2837-rpi-3-b
+- boot.scr.source using bcm2837-rpi-3-b
+- uboot.env using bcm2837-rpi-3-b
+in git-uboot, execute
+$ make rpi_3_32b_defconfig && make -j
+$ sudo find . -name \*.dtb -exec cp {} /mnt/ \;
+FIXME: still does not show console output
+
+NOTE: for building .dtb files check out the dts files
+    bcm2710-rpi-cm3.dts : rpi compute module (base board for separate rpi mpu modules)
+    bcm2837-rpi-3-b.dts : rpi 3b (64bit)
+    bcm2710-rpi-3-b.dts : rpi 3b (32 and 64bit available)
+use the following command
+$ $BASE/yocto/poky-rocko/build/tmp/sysroots-components/x86_64/dtc-native/usr/bin/dtc  -O dtb -o bcm2710-rpi-3-b.dtb -b 0 bcm2710-rpi-3-b.dts
+
+
+
+
+NETWORK BOOT - uboot boot (using sd card for uboot)
+
+TODO    
+
+
+
+
+
+
+NETWORK BOOT - pxe boot (w/o sd card)
+
+just for completion, the "official" way w/o sd card for noobs/raspbian
+
+resources
+https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/net.md
+https://www.raspberrypi.org/documentation/hardware/raspberrypi/bootmodes/net_tutorial.md
+https://developer-blog.net/raspberry-pi-ueber-das-netzwerk-booten/
+
+server: 192.168.1.100
+client: 192.168.10.154
+
+on the pc set network boot flag on the mounted sd card
+(make sure there is no blank line at the end)
+$ sudo mount /dev/mmcblk0p1 /mnt
+$ sudo vi /mnt/config.txt
+    (...)
+    ## prepare for network boot (w/o sd card)
+    program_usb_boot_mode=1
+$ sync
+$ sudo umount /mnt
+
+
+build vcgencmd on pc
+
+make sure cmake is installed and native (not relocateable) toolchain
+$ sudo apt install g++-arm-linux-gnueabihf
+$ sudo apt install gcc-arm-linux-gnueabihf
+$ mkdir ./git_userland && cd ./git_userland
+$ git clone https://github.com/raspberrypi/userland .
+$ ./buildme
+$ scp -r ./build/* root@192.168.10.154:/
+
+plug sd card into rpi and boot
+$ egctl eg toggle off off off
+
+
+then on the rpi execute
+$ vcgencmd otp_dump | grep 17:
+    17:3020000a
+
+remove the program_usb_boot_mode line from config.txt
+(make sure there is no blank line at the end)
+
+powerdown the rpi
+
+
+on pc - prepare nfs server (/srv/nfs/rpi3)
+$ cd ${BASE}/yocto/poky-rocko/build/tmp/deploy/images/raspberrypi3
+$ tar xJf ./console-image-raspberrypi3-20180101115100.rootfs.tar.xz -C /srv/nfs/rpi3/
+$ cp -arf ./bcm2835-bootfiles/* /srv/tftp/rpi3/
+
+start.elf and bootcode.bin have to be under the tftp boot directory,
+in case adjust
+    nfs:  /etc/exports
+    tftp: /etc/default/tftpd-hpa
+$ sudo systemctl enable rpcbind
+$ sudo systemctl restart rpcbind
+$ sudo systemctl enable nfs-kernel-server
+$ sudo systemctl restart nfs-kernel-server
+
+set nfs server in tftp cmdline.txt and from root= onwards, replace it with
+$ vi /srf/tftp/rpi3/cmdline.txt
+    root=/dev/nfs nfsroot=192.168.1.100:/srv/nfs/rpi3,vers=3 rw ip=dhcp rootwait elevator=deadline
+
+
+$ sudo apt install dnsmasq
+$ sudo cp /etc/dnsmasq.conf{,.orig}
+$ sudo vi /etc/dnsmasq.conf
+    ## rpi3 network boot
+    port=0
+    dhcp-range=192.168.1.255,proxy
+    log-dhcp
+    enable-tftp
+    tftp-root=/srv/tftp/rpi3
+    pxe-service=0,"Raspberry Pi Boot   "
+
+$ sudo systemctl enable dnsmasq.service
+$ sudo systemctl restart dnsmasq.service
+
+TODO: this setup was not verryfied!
+
+
+NOTE: on rpi - rpi uses preboot execution environment (pxe) and thus tries to
+find the bootcode.bin via bootp and tftp (all dnsmasq), the files then will link
+to the nfs setup
+
+NOTE: if you wish to run an upstream kernel, booting it via U-Boot is recommended,
+running a common tftpd also will conflict with this dnsmasq setup, etc, etc.
+
+
+
+
+
+
+RPI TOOLS
+
+get rpi tools, containing TODO        
+$ mkdir ./git_tools && cd ./git_tools
+$ git clone https://github.com/raspberrypi/tools .
+
+setup tools environment
+$ export PATH=\$PATH:${BASE}/git_tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin
+or (64bit)
+$ export PATH=\$PATH:${BASE}/git_tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+
+
+
+
+
+
+ISSUES
+
+issue: gstreamer1.0-omx_1.10%.bbappend no gstreamer recipe to append to
+fix: remove the .bbappend file, or rename it
+$ mv ${BASE}/yocto/poky-rocko/meta-raspberrypi/recipes-multimedia/gstreamer/gstreamer1.0-omx_1.10%.bbappend{,.orig}
+
+
+
+issue: rpio needs https
+$ grep -r "http://pypi.python.org/packages/source/" ../meta-*
+    ../meta-raspberrypi/recipes-devtools/python/rpio_0.10.0.bb.orig:SRC_URI = "http://pypi.python.org/packages/source/R/RPIO/${SRCNAME}-${PV}.tar.gz \
+    ../meta-raspberrypi/recipes-devtools/python/rpi-gpio_0.6.2.bb:          http://pypi.python.org/packages/source/R/RPi.GPIO/${SRCNAME}-${PV}.tar.gz \
+fix: edit the .bb files and replace http by https
+
+
+
+
+issue: bootstrap message "INIT: Id "S0" respawning too fast: disabled for 5
+minutes", and no prompt
+
+fix: check /etc/inittab for runlevel 5 (defaultinit) and which tty is used,
+when connected via ftdi cable on pin bar, probably /dev/ttyAMA0 is used
+instead of /dev/ttyS0
+in case connect via ethernet and check which tty's run under group dialout
+$ ls -l /dev | grep dialout
+fix this setting for yocto in ./meta-raspberrypi/conf/machine/raspberrypi3.conf
+
+
+
+---
+issue: kernel panic
+$ cd $BASE/git_kernel/
+$ sudo cp ./arch/arm/boot/zImage /mnt/
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} zImage
+    fatload mmc 0 ${fdt_addr_r} bcm2836-rpi-2-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+FIXME:
+    1.313282] uart-pl011 3f201000.serial: no DMA platform data
+    [    1.331638] random: fast init done
+    [    1.721117] usb 1-1: new high-speed USB device number 2 using dwc2
+    [    1.897053] EXT4-fs (mmcblk0p2): recovery complete
+    [    1.901898] EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)
+    [    1.910005] VFS: Mounted root (ext4 filesystem) on device 179:2.
+    [    1.917336] devtmpfs: mounted
+    [    1.923292] Freeing unused kernel memory: 1024K
+    [    1.964435] hub 1-1:1.0: USB hub found
+    [    1.968324] hub 1-1:1.0: 5 ports detected
+    [    1.989141] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+    [    1.989141]
+    [    1.998272] CPU: 0 PID: 1 Comm: init Tainted: G        W       4.9.75_Lothars #1
+    [    2.005652] Hardware name: BCM2835
+    [    2.009075] [<c010e970>] (unwind_backtrace) from [<c010c028>] (show_stack+0x20/0x24)
+    [    2.016820] [<c010c028>] (show_stack) from [<c0351558>] (dump_stack+0x20/0x28)
+    [    2.024041] [<c0351558>] (dump_stack) from [<c01bd8d0>] (panic+0xc0/0x254)
+    [    2.030914] [<c01bd8d0>] (panic) from [<c011efd4>] (do_exit+0x464/0x864)
+    [    2.037613] [<c011efd4>] (do_exit) from [<c011f484>] (do_group_exit+0x64/0xb8)
+    [    2.044831] [<c011f484>] (do_group_exit) from [<c0128fac>] (get_signal+0x4cc/0x50c)
+    [    2.052485] [<c0128fac>] (get_signal) from [<c010b35c>] (do_signal+0x84/0x3cc)
+    [    2.059708] [<c010b35c>] (do_signal) from [<c010b848>] (do_work_pending+0x70/0xc4)
+    [    2.067276] [<c010b848>] (do_work_pending) from [<c0107d20>] (slow_work_pending+0xc/0x20)
+    [    2.075446] Rebooting in 10 seconds..
+    <reboot>
+*fix* mainline kernel, configure
+    CONFIG_NEON=y
+    CONFIG_KERNEL_MODE_NEON=y
+
+---
+
+
+---
+issue: kernel panic
+$ cd $BASE/git_kernel/
+$ sudo cp ./arch/arm/boot/zImage /mnt/
+$ sudo cp ./arch/arm/boot/dts/*.dtb /mnt/
+$ sudo vi /mnt/uboot.env
+    set fdtfile bcm2836-rpi-2-b.dtb
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} zImage
+    fatload mmc 0 ${fdt_addr_r} bcm2836-rpi-2-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+FIXME:
+    1.313282] uart-pl011 3f201000.serial: no DMA platform data
+    [    1.331638] random: fast init done
+    [    1.721117] usb 1-1: new high-speed USB device number 2 using dwc2
+    [    1.897053] EXT4-fs (mmcblk0p2): recovery complete
+    [    1.901898] EXT4-fs (mmcblk0p2): mounted filesystem with ordered data mode. Opts: (null)
+    [    1.910005] VFS: Mounted root (ext4 filesystem) on device 179:2.
+    [    1.917336] devtmpfs: mounted
+    [    1.923292] Freeing unused kernel memory: 1024K
+    [    1.964435] hub 1-1:1.0: USB hub found
+    [    1.968324] hub 1-1:1.0: 5 ports detected
+    [    1.989141] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+    [    1.989141]
+    [    1.998272] CPU: 0 PID: 1 Comm: init Tainted: G        W       4.9.75_Lothars #1
+    [    2.005652] Hardware name: BCM2835
+    [    2.009075] [<c010e970>] (unwind_backtrace) from [<c010c028>] (show_stack+0x20/0x24)
+    [    2.016820] [<c010c028>] (show_stack) from [<c0351558>] (dump_stack+0x20/0x28)
+    [    2.024041] [<c0351558>] (dump_stack) from [<c01bd8d0>] (panic+0xc0/0x254)
+    [    2.030914] [<c01bd8d0>] (panic) from [<c011efd4>] (do_exit+0x464/0x864)
+    [    2.037613] [<c011efd4>] (do_exit) from [<c011f484>] (do_group_exit+0x64/0xb8)
+    [    2.044831] [<c011f484>] (do_group_exit) from [<c0128fac>] (get_signal+0x4cc/0x50c)
+    [    2.052485] [<c0128fac>] (get_signal) from [<c010b35c>] (do_signal+0x84/0x3cc)
+    [    2.059708] [<c010b35c>] (do_signal) from [<c010b848>] (do_work_pending+0x70/0xc4)
+    [    2.067276] [<c010b848>] (do_work_pending) from [<c0107d20>] (slow_work_pending+0xc/0x20)
+    [    2.075446] Rebooting in 10 seconds..
+    <reboot>
+*fix* mainline kernel, configure
+    CONFIG_NEON=y
+    CONFIG_KERNEL_MODE_NEON=y
+---
+
+
+
+---
+issue: Bad Linux ARM zImage magic!
+yocto kernel, find kernel image and copy directly
+$ find ./ -name Image
+    ./tmp/work/raspberrypi3-poky-linux-gnueabi/linux-raspberrypi/1_4.9.61+gitAUTOINC+bc9f2c9a82-r61/linux-raspberrypi3-standard-build/arch/arm/boot/Image
+$ sudo cp $( find ./ -name Image) /mnt/kernel7.img
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} kernel7.img
+    fatload mmc 0 ${fdt_addr_r} bcm2710-rpi-3-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+FIXME:
+    Bad Linux ARM zImage magic!
+-> copy zImage instead of Image
+---
+
+---
+issue: Starting kernel ...
+yocto kernel
+$ sudo cp ./tmp/deploy/images/raspberrypi3/zImage /mnt/
+$ cat ./boot.cmd
+    fatload mmc 0 ${kernel_addr_r} zImage
+    fatload mmc 0 ${fdt_addr_r} bcm2710-rpi-3-b.dtb
+    setenv bootargs dwc_otg.lpm_enable=0 console=ttyAMA0,115200 earlyprintk root=/dev/mmcblk0p2 rootfstype=ext4 elevator=noop noinitrd rw rootwait panic=10
+    bootz ${kernel_addr_r} - ${fdt_addr_r}
+$ sudo mkimage -C none -A arm -T script -d boot.cmd /mnt/boot.scr
+FIXME:
+    Found U-Boot script /boot.scr
+    reading /boot.scr
+    349 bytes read in 16 ms (20.5 KiB/s)
+    ## Executing script at 02000000
+    reading zImage
+    4582696 bytes read in 389 ms (11.2 MiB/s)
+    reading bcm2710-rpi-3-b.dtb
+    17794 bytes read in 24 ms (723.6 KiB/s)
+    Kernel image @ 0x1000000 [ 0x000000 - 0x45ed28 ]
+    ## Flattened Device Tree blob at 00000100
+       Booting using the fdt blob at 0x000100
+       reserving fdt memory region: addr=0 size=1000
+       Using Device Tree in place at 00000100, end 00007681
+
+    Starting kernel ...
+---
