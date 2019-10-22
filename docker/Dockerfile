@@ -3,7 +3,7 @@ FROM ubuntu:19.04
 WORKDIR /root
 
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge && \
-    apt-get install -y  libncurses5-dev zlib1g-dev libssl1.0.0 gawk wget git-core make gcc g++ build-essential bison flex binutils unzip python bzip2 libssl-dev locales
+    apt-get install -y  libncurses5-dev zlib1g-dev gawk wget git-core make gcc g++ build-essential bison flex binutils unzip python bzip2 libssl-dev locales
 
 RUN locale-gen en_US.UTF-8
 
