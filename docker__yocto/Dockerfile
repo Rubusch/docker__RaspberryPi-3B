@@ -3,8 +3,8 @@ FROM ubuntu:19.04
 WORKDIR /root
 
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge && \
-    apt-get install  gawk wget git-core diffstat unzip texinfo gcc-multilib \
-                     build-essential chrpath socat libsdl1.2-dev xterm
+    apt-get install -y  gawk wget git-core diffstat unzip texinfo gcc-multilib \
+                        build-essential chrpath socat libsdl1.2-dev xterm
 
 #apt-get install -y  libncurses5-dev zlib1g-dev gawk wget git-core make gcc g++ build-essential bison flex binutils unzip python bzip2 libssl-dev locales && \
 #    apt-get install -y  bc cpio rsync
