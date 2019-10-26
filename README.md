@@ -24,15 +24,15 @@ $ docker run -ti rubuschl:rpi3b-buildroot /bin/bash
 
 ```
 $ cd ./docker__yocto/
-$ time docker build --no-cache --tag 19.04 -t rubuschl:rpi3b-yocto .
-$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl:rpi3b-yocto
+$ time docker build --no-cache --tag 19.04 -t rubuschl:rpi3b_yocto .
+$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl:rpi3b_yocto
 ```
 
 
 ## Debug (yocto)
 
 ```
-$ docker run -ti rubuschl:rpi3b-yocto /bin/bash
+$ docker run -ti rubuschl:rpi3b_yocto /bin/bash
 ```
 
 
