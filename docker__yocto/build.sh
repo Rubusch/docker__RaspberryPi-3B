@@ -9,8 +9,11 @@ export DEFCONFIG=raspberrypi3__lothar_defconfig
 export FORCE_UNSAFE_CONFIGURE=1
 
 cd poky
-#git checkout -b fido origin/fido
+git checkout -b warrior origin/warrior
 source oe-init-build-env
+
+## TODO yocto layer, params, etc, setup for rpi3b, repo...
+bitbake core-image minimal
 
 ## obtain build artifacts
 # TODO
