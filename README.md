@@ -1,6 +1,9 @@
 # docker__buildroot__rpi-3b
 
-TODO: under construction
+Contains a Dockerfile for building an docker image and its container for the Raspberry pi 3b using buildroot.
+
+Implicitely will run ```git clone --branch lothar/raspberry3-devel https://github.com/Rubusch/buildroot.git``` inside the docker container.
+
 
 ## Build
 
