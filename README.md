@@ -6,11 +6,17 @@ Implicitely will run ```git clone --branch lothar/raspberry3-devel https://githu
 
 
 
+## Resources
+
+while buildroot is quite straight forward, some information about the yocto setupt
+https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
+
+
+
 ## Buildroot
 
 ### Build
 
-**UNDER CONSTRUCTION**
 
 ```
 $ cd ./docker__buildroot/
@@ -42,6 +48,8 @@ $ docker run -ti rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 
 
 ## Yocto
+
+**UNDER CONSTRUCTION**
 
 ### Build
 
