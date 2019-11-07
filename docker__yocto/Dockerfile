@@ -2,6 +2,8 @@ FROM ubuntu:19.04
 
 WORKDIR /root
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 ## set up apt fully functional
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
 RUN apt-get install -y  \
