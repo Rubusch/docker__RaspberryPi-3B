@@ -49,7 +49,7 @@ $ docker run -ti rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 
 ```
 $ cd ./docker__yocto/
-$ time docker build --no-cache -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
+$ time docker build --no-cache --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
 ```
 
 ### Usage
