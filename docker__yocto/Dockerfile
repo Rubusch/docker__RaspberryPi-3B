@@ -74,7 +74,7 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get sources
-RUN su $USER && git clone git://git.yoctoproject.org/poky poky
+RUN su $USER && cd && git clone git://git.yoctoproject.org/poky poky
 
 
 ################################################################################

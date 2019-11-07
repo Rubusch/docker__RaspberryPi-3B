@@ -45,8 +45,6 @@ $ docker run -ti rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 
 ### Build
 
-**UNDER CONSTRUCTION**
-
 ```
 $ cd ./docker__yocto/
 $ time docker build --no-cache --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
@@ -59,7 +57,7 @@ $ docker images
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b-yocto:20191104161353
+$ time docker run -ti -v $PWD/output:/mnt --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-yocto:20191104161353
 ```
 
 
@@ -71,5 +69,5 @@ $ docker images
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ docker run -ti rubuschl/rpi3b-yocto:20191104161353 /bin/bash
+$ docker run -ti --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-yocto:20191104161353 /bin/bash
 ```
