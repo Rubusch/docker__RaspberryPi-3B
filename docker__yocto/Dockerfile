@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:18.04
 
 MAINTAINER Lothar Rubusch <lotophagon@protonmail.com>
 WORKDIR /root
@@ -64,7 +64,7 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get sources
-RUN su $USER && cd /home/$USER && git clone git://git.yoctoproject.org/poky poky
+RUN sudo su - $USER && git clone git://git.yoctoproject.org/poky poky
 
 
 ################################################################################
