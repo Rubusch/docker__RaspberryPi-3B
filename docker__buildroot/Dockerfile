@@ -1,7 +1,6 @@
 FROM ubuntu:19.10
-
+MAINTAINER Lothar Rubusch <lotophagon@protonmail.com>
 WORKDIR /root
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 ## set up apt fully functional

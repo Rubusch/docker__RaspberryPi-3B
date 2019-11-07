@@ -1,5 +1,4 @@
 FROM ubuntu:18.04
-
 MAINTAINER Lothar Rubusch <lotophagon@protonmail.com>
 WORKDIR /root
 ENV DEBIAN_FRONTEND=noninteractive
