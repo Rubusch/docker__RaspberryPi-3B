@@ -2,8 +2,12 @@ FROM ubuntu:19.04
 
 WORKDIR /root
 
-RUN apt update && apt-get upgrade -y && apt-get autoremove -y --purge && \
-    apt install -y  \
+## set up apt fully functional
+RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
+RUN apt-get install -y  \
+        apt-utils
+
+RUN apt-get install -y  \
         build-essential \
         libncurses5-dev \
         zlib1g-dev \
@@ -22,7 +26,7 @@ RUN apt update && apt-get upgrade -y && apt-get autoremove -y --purge && \
         libssl-dev \
         locales
 
-    apt install -y  \
+RUN apt-get install -y  \
         bc \
         cpio \
         rsync
