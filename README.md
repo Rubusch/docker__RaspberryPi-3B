@@ -5,7 +5,12 @@ Contains a Dockerfile for building an docker image and its container for the Ras
 Implicitely will run ```git clone --branch lothar/raspberry3-devel https://github.com/Rubusch/buildroot.git``` inside the docker container.
 
 
-## Build (buildroot)
+
+## Buildroot
+
+### Build
+
+**UNDER CONSTRUCTION**
 
 ```
 $ cd ./docker__buildroot/
@@ -18,18 +23,23 @@ $ docker images
 $ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b-buildroot:20191104161353
 ```
 
-
-## Debug (buildroot)
+### Debug
 
 ```
 $ docker run -ti rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 ```
 
-## Build (yocto)
+
+
+## Yocto
+
+### Build
+
+**UNDER CONSTRUCTION**
 
 ```
 $ cd ./docker__yocto/
-$ time docker build --no-cache -t rubuschl/rpi3b_yocto:$(date +%Y%m%d%H%M%S) .
+$ time docker build --no-cache -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
 $ docker images
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
@@ -38,10 +48,8 @@ $ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b_yocto:201911041613
 ```
 
 
-## Debug (yocto)
+### Debug
 
 ```
-$ docker run -ti rubuschl/rpi3b_yocto:20191104161353 /bin/bash
+$ docker run -ti rubuschl/rpi3b-yocto:20191104161353 /bin/bash
 ```
-
-
