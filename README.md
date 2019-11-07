@@ -59,7 +59,7 @@ $ docker images
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b_yocto:20191104161353
+$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b-yocto:20191104161353
 ```
 
 
