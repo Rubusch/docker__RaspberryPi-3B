@@ -2,10 +2,52 @@ FROM ubuntu:19.04
 
 WORKDIR /root
 
-RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge && \
-    apt-get install -y  libncurses5-dev zlib1g-dev gawk wget git-core make gcc g++ build-essential bison flex binutils unzip python bzip2 libssl-dev locales && \
-    apt-get install -y  gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm && \
-    apt-get install -y  bc cpio rsync
+RUN apt update && apt-get upgrade -y && apt-get autoremove -y --purge
+RUN apt install -y  \
+    build-essential \
+    libncurses5-dev \
+    zlib1g-dev \
+    gawk \
+    wget \
+    git-core \
+    make \
+    gcc \
+    g++ \
+    bison \
+    flex \
+    binutils \
+    unzip \
+    python \
+    bzip2 \
+    libssl-dev \
+    locales
+
+RUN apt install -y  \
+    gawk \
+    wget \
+    git-core \
+    diffstat \
+    unzip \
+    texinfo \
+    gcc-multilib \
+    build-essential \
+    chrpath \
+    socat \
+    libsdl1.2-dev \
+    xterm
+
+RUN apt install -y  \
+    bc \
+    cpio \
+    rsync
+
+## (opt) tools for debugging and working, e.g. X11-apps for testing the xserver via xclock
+RUN apt-get install -y   \
+            vim \
+            screen \
+            minicom \
+            x11-apps \
+            sudo
 
 RUN locale-gen en_US.UTF-8
 
