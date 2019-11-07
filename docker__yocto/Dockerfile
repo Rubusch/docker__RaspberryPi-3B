@@ -30,23 +30,14 @@ RUN apt-get install -y  \
     python \
     bzip2 \
     libssl-dev \
-    locales
-
-RUN apt-get install -y  \
-    gawk \
-    wget \
-    git-core \
+    locales \
     diffstat \
-    unzip \
     texinfo \
     gcc-multilib \
-    build-essential \
     chrpath \
     socat \
     libsdl1.2-dev \
-    xterm
-
-RUN apt-get install -y  \
+    xterm \
     bc \
     cpio \
     rsync
@@ -69,12 +60,11 @@ ENV LC_ALL en_US.UTF-8
 ## setup user and run stuff under user
 RUN useradd "$USER" -m --password "$USER"
 RUN usermod -a -G sudo "$USER"
-RUN usermod -a -G dialout "$USER"
 RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get sources
-RUN su $USER && cd && git clone git://git.yoctoproject.org/poky poky
+RUN su $USER && cd /home/$USER && git clone git://git.yoctoproject.org/poky poky
 
 
 ################################################################################
