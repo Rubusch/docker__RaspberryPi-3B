@@ -20,8 +20,11 @@ https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
 ```
 $ cd ./docker__buildroot/
-$ time docker build --no-cache -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
+$ time docker build -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
 ```
+
+Use ```--no-cache``` when re-implementing the docker image.
+
 
 ### Usage
 
@@ -31,7 +34,7 @@ $ docker images
     rubuschl/rpi3b-buildroot 20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ time docker run -ti --rm -v $PWD/output:/mnt rubuschl/rpi3b-buildroot:20191104161353
+$ time docker run -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353
 ```
 
 ### Debug
@@ -42,7 +45,7 @@ $ docker images
     rubuschl/rpi3b-buildroot 20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ docker run -ti rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
+$ docker run -ti --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 ```
 
 
@@ -59,6 +62,10 @@ $ time docker build --no-cache --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(
 ```
 
 ### Usage
+
+TODO configure yocto correctly
+TODO load meta-rpi layer
+TODO mount correct output folder
 ```
 $ docker images
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
