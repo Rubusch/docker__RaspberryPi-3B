@@ -8,7 +8,7 @@ Implicitely will run ```git clone --branch lothar/raspberry3-devel https://githu
 
 ## Resources
 
-while buildroot is quite straight forward, some information about the yocto setupt
+Yocto: some information about the used yocto setup, user: 'root', password: 'jumpnowtek'
 https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
 
