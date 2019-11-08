@@ -8,4 +8,4 @@ make -j8
 ##
 ##   *** Error during update of the configuration.
 ##
-cp -arf ~/buildroot/output/* /mnt/
+cp -arfL ~/buildroot/output/* /mnt/
