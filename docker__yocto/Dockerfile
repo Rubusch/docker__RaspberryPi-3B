@@ -78,8 +78,10 @@ RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/meta-qt
 
 RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/meta-raspberrypi
 
-## adjustable meta-layer
+## development: adjustable meta-layer
+# TODO checkout from my repo
 RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
+RUN cd /home/$USER/poky/meta-rpi && git checkout -b warrior origin/warrior
 
 RUN chown $USER:$USER -R /home/$USER
 
