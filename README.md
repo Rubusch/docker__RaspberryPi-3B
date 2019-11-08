@@ -8,7 +8,7 @@ Implicitely will run ```git clone --branch lothar/raspberry3-devel https://githu
 
 ## Resources
 
-Yocto: some information about the used yocto setup, user: 'root', password: 'jumpnowtek'
+Yocto: some information about the used yocto setup
 https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
 
@@ -52,7 +52,8 @@ $ docker run -ti --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-buildro
 
 ## Yocto
 
-**UNDER CONSTRUCTION**
+Login user: 'root', password: 'root'
+
 
 ### Build
 
@@ -61,11 +62,9 @@ $ cd ./docker__yocto/
 $ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
 ```
 
+
 ### Usage
 
-TODO configure yocto correctly
-TODO load meta-rpi layer
-TODO mount correct output folder
 ```
 $ docker images
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
