@@ -45,10 +45,8 @@ sed -i '/^EXTRA_USERS_PARAMS = "usermod -P jumpnowtek root; "/s/.*/EXTRA_USERS_P
 sed -i '/^INHERIT += "chageusers"/s/.*/#INHERIT += "chageusers"/g' $BUILDDIR/conf/local.conf
 sed -i '/^CHAGE_USERS_PARAMS = "chage -d0 root; "/s/.*/#CHAGE_USERS_PARAMS = "chage -d0 root; "/g' $BUILDDIR/conf/local.conf
 
-
 ## source again, before start building
 source oe-init-build-env $BUILDDIR
 
-# TODO build
-
+## build
 bitbake console-image
