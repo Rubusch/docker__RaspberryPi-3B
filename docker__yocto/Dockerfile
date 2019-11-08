@@ -81,7 +81,9 @@ RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org
 ## development: adjustable meta-layer
 # TODO checkout from my repo
 RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
-RUN cd /home/$USER/poky/meta-rpi && git checkout -b warrior origin/warrior
+
+# FIXME
+#RUN cd /home/$USER/poky/meta-rpi && git checkout -b warrior origin/warrior
 
 RUN chown $USER:$USER -R /home/$USER
 
