@@ -20,7 +20,7 @@ https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
 ```
 $ cd ./docker__buildroot/
-$ time docker build -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
+$ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
 ```
 
 Use ```--no-cache``` when re-implementing the docker image.
@@ -58,7 +58,7 @@ $ docker run -ti --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-buildro
 
 ```
 $ cd ./docker__yocto/
-$ time docker build --no-cache --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
+$ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%d%H%M%S) .
 ```
 
 ### Usage
