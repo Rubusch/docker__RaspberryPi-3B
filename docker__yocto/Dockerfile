@@ -84,7 +84,7 @@ RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/Rubusch
 #RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
 
 ## for development keep a tracked branch
-RUN cd /home/$USER/poky/meta-rpi && git checkout $BRANCH_YOCTO -b $BRANCH_YOCTO
+RUN cd /home/$USER/poky/meta-rpi && git checkout $BRANCH_YOCTO
 
 ## reset permissions
 RUN chown $USER:$USER -R /home/$USER
