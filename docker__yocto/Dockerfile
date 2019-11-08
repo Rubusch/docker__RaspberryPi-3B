@@ -79,12 +79,14 @@ RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/meta-qt
 RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/meta-raspberrypi
 
 ## development: adjustable meta-layer
-# TODO checkout from my repo
-RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
+RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/Rubusch/meta-rpi.git
+## or use original
+#RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
 
-# FIXME
-#RUN cd /home/$USER/poky/meta-rpi && git checkout -b warrior origin/warrior
+## for development keep a tracked branch
+RUN cd /home/$USER/poky/meta-rpi && git checkout $BRANCH_YOCTO -b $BRANCH_YOCTO
 
+## reset permissions
 RUN chown $USER:$USER -R /home/$USER
 
 
