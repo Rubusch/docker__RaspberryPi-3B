@@ -8,4 +8,7 @@ make -j8
 ##
 ##   *** Error during update of the configuration.
 ##
-cp -arfL ~/buildroot/output/* /mnt/
+
+## obtain build artifacts
+chown $(whoami):$(whoami) -R ~/output
+cp -arfL ~/buildroot/output/* ~/output/
