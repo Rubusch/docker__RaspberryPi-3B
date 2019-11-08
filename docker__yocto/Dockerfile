@@ -9,6 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ## in case docker complains for a not set USER, perhaps you forgot to use --build-arg USER=$USER
 ARG USER=""
 
+## the yocto branch
+ARG BRANCH_YOCTO="warrior"
+
 
 ################################################################################
 ## set up apt fully functional
@@ -67,7 +70,17 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get sources
-RUN cd /home/$USER && git clone git://git.yoctoproject.org/poky poky
+RUN cd /home/$USER && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/poky poky
+
+RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.openembedded.org/meta-openembedded
+
+RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/meta-qt5/meta-qt5
+
+RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/meta-raspberrypi
+
+## adjustable meta-layer
+RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
+
 RUN chown $USER:$USER -R /home/$USER
 
 
