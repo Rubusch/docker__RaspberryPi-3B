@@ -18,14 +18,12 @@ RUN apt-get install -y  \
 
 RUN apt-get install -y  \
     build-essential \
-    libncurses5-dev \
-    zlib1g-dev \
+    chrpath \
+    diffstat \
     gawk \
-    wget \
-    git-core \
-    make \
-    gcc \
-    g++ \
+    libncurses5-dev \
+    texinfo \
+    zlib1g-dev \
     bison \
     flex \
     binutils \
@@ -34,16 +32,13 @@ RUN apt-get install -y  \
     bzip2 \
     libssl-dev \
     locales \
-    diffstat \
-    texinfo \
-    gcc-multilib \
-    chrpath \
-    socat \
     libsdl1.2-dev \
     xterm \
     bc \
     cpio \
-    rsync
+    rsync \
+    wget \
+    git-core
 
 ## (opt) tools for debugging and working, e.g. X11-apps for testing the xserver via xclock
 RUN apt-get install -y   \

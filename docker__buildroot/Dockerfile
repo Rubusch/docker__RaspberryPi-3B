@@ -33,20 +33,30 @@ RUN apt-get install -y  \
         python \
         bzip2 \
         libssl-dev \
-        locales
-
-RUN apt-get install -y  \
+        locales \
         bc \
         cpio \
         rsync
 
+## (opt) java related packages
+#RUN apt-get install -y openjdk-8-jdk
+
+## (opt) documentation related packages
+#RUN apt-get install -y asciidoc w3m python-argparse dblatex
+
+## (opt) graph generation
+#RUN apt-get install -y graphviz python-matplotlib
+
 ## (opt) tools for debugging and working, e.g. X11-apps for testing the xserver via xclock
 RUN apt-get install -y   \
-            vim \
-            screen \
-            minicom \
-            x11-apps \
-            sudo
+        cvs \
+        mercurial \
+        subversion \
+        vim \
+        screen \
+        minicom \
+        x11-apps \
+        sudo
 
 
 ################################################################################
