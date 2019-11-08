@@ -4,7 +4,7 @@
 export BUILDDIR=~/poky/build
 chown $(whoami):$(whoami) -R $BUILDDIR
 
-cd poky
+cd ~/poky
 source oe-init-build-env $BUILDDIR
 
 cp -af ~/poky/meta-rpi/conf/local.conf.sample $BUILDDIR/conf/local.conf
@@ -46,6 +46,7 @@ sed -i '/^INHERIT += "chageusers"/s/.*/#INHERIT += "chageusers"/g' $BUILDDIR/con
 sed -i '/^CHAGE_USERS_PARAMS = "chage -d0 root; "/s/.*/#CHAGE_USERS_PARAMS = "chage -d0 root; "/g' $BUILDDIR/conf/local.conf
 
 ## source again, before start building
+cd ~/poky
 source oe-init-build-env $BUILDDIR
 
 ## build
