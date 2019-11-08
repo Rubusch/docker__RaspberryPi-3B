@@ -13,6 +13,9 @@ cp -af ~/poky/meta-rpi/conf/bblayers.conf.sample $BUILDDIR/conf/bblayers.conf
 ## The Yocto BSP requirements for the Raspberry Pi are in meta-raspberrypi
 # TODO adjust bblayers
 
+## source again, before start building
+source oe-init-build-env $BUILDDIR
 
-## TODO yocto layer, params, etc, setup for rpi3b, repo...
+# TODO build
+
 bitbake core-image minimal
