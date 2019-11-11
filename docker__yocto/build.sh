@@ -2,7 +2,7 @@
 ## resources:
 ## https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 export BUILDDIR=~/poky/build
-test -d $BUILDDIR && chown $(whoami):$(whoami) -R $BUILDDIR
+chown $(whoami):$(whoami) -R $BUILDDIR
 
 cd ~/poky
 source oe-init-build-env $BUILDDIR
