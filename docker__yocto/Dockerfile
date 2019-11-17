@@ -41,7 +41,8 @@ RUN apt-get install -y  \
     cpio \
     rsync \
     wget \
-    git-core
+    git-core \
+    dosfstools
 
 ## (opt) tools for debugging and working, e.g. X11-apps for testing the xserver via xclock
 RUN apt-get install -y   \
