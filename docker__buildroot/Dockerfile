@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USER=""
 
 ## the yocto branch
-ARG BRANCH_BUILDROOT="lothar/2020.02.x-rpi3b"
+ARG BRANCH_BUILDROOT="lothar/rpi3b-2020.02.x"
 
 
 ################################################################################
