@@ -9,6 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ## in case docker complains for a not set USER, perhaps you forgot to use --build-arg USER=$USER
 ARG USER=""
 
+## the yocto branch
+ARG BRANCH_BUILDROOT="lothar/2020.02.x-rpi3b"
+
 
 ################################################################################
 ## set up apt fully functional
@@ -77,7 +80,7 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get (my) sources
-RUN cd /home/$USER && git clone -j4 --depth=1 --branch lothar/raspberry3-devel https://github.com/Rubusch/buildroot.git buildroot
+RUN cd /home/$USER && git clone -j4 --depth=1 --branch ${BRANCH_BUILDROOT} https://github.com/Rubusch/buildroot.git buildroot
 ## alternatively get official buildrooot
 #RUN git clone -j4 --depth=1 https://github.com/buildroot/buildroot.git buildroot
 RUN chown $USER:$USER -R /home/$USER
