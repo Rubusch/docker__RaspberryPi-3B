@@ -1,5 +1,5 @@
 #!/bin/bash -e
 export DEFCONFIG=lothars__raspberrypi3_defconfig
-cd buildroot
+cd /home/$(whoami)/buildroot
 make ${DEFCONFIG}
 make -j8
