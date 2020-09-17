@@ -23,7 +23,7 @@ $ cd ./docker__buildroot/
 $ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
 ```
 
-Use ```--no-cache``` when re-implementing the docker image.
+Use ```--no-cache``` for full rebuild.  
 
 
 ### Usage
@@ -37,9 +37,9 @@ $ docker images
 $ time docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/dl:/home/$USER/buildroot/dl -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353
 ```
 
-### Debug
+Append ``/bin/bash`` to work inside the container.  
 
-Use the above command and append `` /bin/bash``.
+
 
 
 ## Yocto
