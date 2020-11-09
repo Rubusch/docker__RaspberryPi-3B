@@ -1,14 +1,18 @@
 # Build Container for my Raspberry Pi 3b
 
-Contains a Dockerfile for building an docker image and its container for the Raspberry pi 3b using buildroot, or yocto.
+Contains a Dockerfile for building an docker image and its container for the Raspberry pi 3b using buildroot, or yocto.  
 
-Implicitely will run ```git clone --branch lothar/raspberry3-devel https://github.com/Rubusch/buildroot.git``` inside the docker container.
+Implicitely will run clone  
+
+* lothar's buildroot repo  
+* lothar's meta-layers / yocto stuff  
 
 
 
 ## Resources
 
-Yocto: some information about the used yocto setup
+Yocto: some information about the used yocto setup  
+
 https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 
 
@@ -34,10 +38,12 @@ $ docker images
     rubuschl/rpi3b-buildroot 20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ time docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/dl:/home/$USER/buildroot/dl -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353
+$ time docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/dl:/home/$USER/buildroot/dl -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
+
+docker$ build.sh
 ```
 
-Append ``/bin/bash`` to work inside the container.  
+Omit ``/bin/bash`` for  (re)building the default image.  
 
 
 
@@ -63,7 +69,9 @@ $ docker images
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
     ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
 
-$ time docker run --rm -ti -v $PWD/output:/home/$USER/poky/build --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-yocto:20191104161353
+$ time docker run --rm -ti -v $PWD/output:/home/$USER/poky/build --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-yocto:20191104161353 /bin/bash
+
+docker$ build.sh
 ```
 
 
