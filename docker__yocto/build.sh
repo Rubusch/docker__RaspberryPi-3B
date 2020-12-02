@@ -1,14 +1,17 @@
 #!/bin/bash -e
 ## resources:
 ## https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
-export BUILDDIR=~/poky/build
-chown $(whoami):$(whoami) -R $BUILDDIR
+export USER="$(whoami)"
+export MY_HOME="/home/${USER}"
+export BUILDDIR="${MY_HOME}/poky/build"
 
-cd ~/poky
+sudo chown ${USER}:${USER} -R ${BUILDDIR}
+
+cd ${MY_HOME}/poky
 source oe-init-build-env $BUILDDIR
 
-cp -af ~/poky/meta-rpi/conf/local.conf.sample $BUILDDIR/conf/local.conf
-cp -af ~/poky/meta-rpi/conf/bblayers.conf.sample $BUILDDIR/conf/bblayers.conf
+cp -af ${MY_HOME}/poky/meta-rpi/conf/local.conf.sample $BUILDDIR/conf/local.conf
+cp -af ${MY_HOME}/poky/meta-rpi/conf/bblayers.conf.sample $BUILDDIR/conf/bblayers.conf
 
 ## WARNING: Do not include meta-yocto-bsp in your bblayers.conf.
 ## The Yocto BSP requirements for the Raspberry Pi are in meta-raspberrypi
@@ -46,7 +49,7 @@ sed -i '/^INHERIT += "chageusers"/s/.*/#INHERIT += "chageusers"/g' $BUILDDIR/con
 sed -i '/^CHAGE_USERS_PARAMS = "chage -d0 root; "/s/.*/#CHAGE_USERS_PARAMS = "chage -d0 root; "/g' $BUILDDIR/conf/local.conf
 
 ## source again, before start building
-cd ~/poky
+cd ${MY_HOME}/poky
 source oe-init-build-env $BUILDDIR
 
 ## build
