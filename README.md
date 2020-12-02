@@ -1,3 +1,7 @@
+[![CircleCI](https://circleci.com/gh/Rubusch/docker__raspberrypi3b.svg?style=shield)](https://circleci.com/gh/Rubusch/docker__raspberrypi3b)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+
+
 # Build Container for my Raspberry Pi 3b
 
 Contains a Dockerfile for building an docker image and its container for the Raspberry pi 3b using buildroot, or yocto.  
@@ -27,7 +31,7 @@ $ cd ./docker__buildroot/
 $ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-buildroot:$(date +%Y%m%d%H%M%S) .
 ```
 
-Use ```--no-cache``` for full rebuild.  
+Use ```--no-cache``` for full re-build.  
 
 
 ### Usage
@@ -36,14 +40,14 @@ Use ```--no-cache``` for full rebuild.
 $ docker images
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
     rubuschl/rpi3b-buildroot 20191104161353      cbf4cb380168        24 minutes ago      10.5GB
-    ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
+    ...
 
-$ time docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/dl:/home/$USER/buildroot/dl -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
+$ docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/dl:/home/$USER/buildroot/dl -v $PWD/output:/home/$USER/buildroot/output rubuschl/rpi3b-buildroot:20191104161353 /bin/bash
 
-docker$ build.sh
+docker$> build.sh
 ```
 
-Omit ``/bin/bash`` for  (re)building the default image.  
+Defaults to ``build.sh`` without the ``/bin/bash``.  
 
 
 
@@ -67,17 +71,17 @@ $ time docker build --build-arg USER=$USER -t rubuschl/rpi3b-yocto:$(date +%Y%m%
 $ docker images
     REPOSITORY               TAG                 IMAGE ID            CREATED             SIZE
     rubuschl/rpi3b-yocto     20191104161353      cbf4cb380168        24 minutes ago      10.5GB
-    ubuntu                   xenial              5f2bf26e3524        4 days ago          123MB
+    ...
 
-$ time docker run --rm -ti -v $PWD/output:/home/$USER/poky/build --user=$USER:$USER --workdir=/home/$USER rubuschl/rpi3b-yocto:20191104161353 /bin/bash
+$ docker run --rm -ti --user=$USER:$USER --workdir=/home/$USER -v $PWD/output:/home/$USER/poky/build rubuschl/rpi3b-yocto:20191104161353 /bin/bash
 
-docker$ build.sh
+docker$> build.sh
 ```
 
 
 ### SD Card
 
-Plug the card into the card reader. The following method uses the yocto scripts. It is also possible to prepare the card with fdisk, format it manually and copy the binaries via dd tool.
+Plug the card into the card reader. The following method uses the yocto scripts. It is also possible to prepare the card with fdisk, format it manually and copy the binaries via dd tool.  
 
 ```
 $ lsblk
@@ -100,5 +104,5 @@ docker# ./copy_boot.sh sdc
 docker# ./copy_rootfs.sh sdc console
 ```
 
-Note: image type here was 'console', alternatively use something like ``./copy_rootfs.sh sdb qt5 rpi3``.
+Note: image type here was 'console', alternatively use something like ``./copy_rootfs.sh sdb qt5 rpi3``.  
 
