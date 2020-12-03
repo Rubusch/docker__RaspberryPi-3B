@@ -3,9 +3,11 @@
 ## https://jumpnowtek.com/rpi/Raspberry-Pi-Systems-with-Yocto.html
 export USER="$(whoami)"
 export MY_HOME="/home/${USER}"
-export BUILDDIR="${MY_HOME}/poky/build"
+export YOCTODIR="${MY_HOME}/poky"
+export BUILDDIR="${YOCTODIR}/build"
 
-sudo chown ${USER}:${USER} -R ${BUILDDIR}
+## this may take time
+sudo chown ${USER}:${USER} -R ${YOCTODIR}
 
 cd ${MY_HOME}/poky
 source oe-init-build-env $BUILDDIR
@@ -54,3 +56,6 @@ source oe-init-build-env $BUILDDIR
 
 ## build
 bitbake console-image
+
+echo "READY."
+echo
