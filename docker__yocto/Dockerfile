@@ -7,17 +7,18 @@ ENV DEBIAN_FRONTEND=noninteractive
 ################################################################################
 ## the USER is needed to make it available as --build-arg
 ## in case docker complains for a not set USER, perhaps you forgot to use --build-arg USER=$USER
-ARG USER=""
+ARG USER="${USER}"
 
 ## the yocto branch
-ARG BRANCH_YOCTO="warrior"
-
+#ARG BRANCH_YOCTO="warrior"
+ARG BRANCH_YOCTO="dunfell"
 
 ################################################################################
 ## set up apt fully functional
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
+
 RUN apt-get install -y  \
-        apt-utils
+    apt-utils
 
 RUN apt-get install -y  \
     build-essential \
