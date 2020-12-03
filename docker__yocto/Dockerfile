@@ -72,24 +72,21 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get sources
-RUN cd /home/$USER && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/poky poky
+RUN cd /home/$USER && sudo su $USER -c "git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/poky poky"
 
-RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.openembedded.org/meta-openembedded
+RUN cd /home/$USER/poky && sudo su $USER -c "git clone -b $BRANCH_YOCTO git://git.openembedded.org/meta-openembedded"
 
-RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/meta-qt5/meta-qt5
+RUN cd /home/$USER/poky && sudo su $USER -c "git clone -b $BRANCH_YOCTO https://github.com/meta-qt5/meta-qt5"
 
-RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/meta-raspberrypi
+RUN cd /home/$USER/poky && sudo su $USER -c "git clone -b $BRANCH_YOCTO git://git.yoctoproject.org/meta-raspberrypi"
 
 ## development: adjustable meta-layer
-RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/Rubusch/meta-rpi.git
+#RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO https://github.com/Rubusch/meta-rpi.git
 ## or use original
-#RUN cd /home/$USER/poky && git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi
+RUN cd /home/$USER/poky && sudo su $USER -c "git clone -b $BRANCH_YOCTO git://github.com/jumpnow/meta-rpi"
 
 ## for development keep a tracked branch
-RUN cd /home/$USER/poky/meta-rpi && git checkout $BRANCH_YOCTO
-
-## reset permissions
-RUN chown $USER:$USER -R /home/$USER
+RUN cd /home/$USER/poky/meta-rpi && sudo su $USER -c "git checkout $BRANCH_YOCTO"
 
 
 ################################################################################
