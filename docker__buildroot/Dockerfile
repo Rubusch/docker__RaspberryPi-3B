@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USER=""
 
 ## the yocto branch
-ARG BRANCH_BUILDROOT="lothar/rpi3b-2020.02.x"
+ARG BRANCH="lothar/2020.11.x"
 
 
 ################################################################################
@@ -80,7 +80,7 @@ RUN sed -i '/%sudo/s/.*/%sudo   ALL=NOPASSWD: ALL/' /etc/sudoers
 
 ################################################################################
 ## get (my) sources
-RUN cd /home/$USER && git clone -j4 --depth=1 --branch ${BRANCH_BUILDROOT} https://github.com/Rubusch/buildroot.git buildroot
+RUN cd /home/$USER && git clone -j4 --depth=1 --branch ${BRANCH} https://github.com/Rubusch/buildroot.git buildroot
 ## alternatively get official buildrooot
 #RUN git clone -j4 --depth=1 https://github.com/buildroot/buildroot.git buildroot
 RUN chown $USER:$USER -R /home/$USER
