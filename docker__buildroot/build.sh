@@ -1,10 +1,16 @@
 #!/bin/bash -e
 export DEFCONFIG=raspberrypi3_defconfig
-export MY_HOME=/home/$(whoami)
+export USER="$(whoami)"
+export MY_HOME="/home/${USER}"
+export BUILDDIR="${MY_HOME}/buildroot"
 
-sudo chown $(whoami):$(whoami) -R ${MY_HOME}/buildroot/dl
-sudo chown $(whoami):$(whoami) -R ${MY_HOME}/buildroot/output
+sudo chown ${USER}:${USER} -R ${MY_HOME}/buildroot/dl
+sudo chown ${USER}:${USER} -R ${MY_HOME}/buildroot/output
 
-cd ${MY_HOME}/buildroot
+cd ${BUILDDIR}
+
 make defconfig ${DEFCONFIG}
 make -j8
+
+echo "READY."
+echo
